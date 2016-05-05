@@ -1,5 +1,5 @@
 #!perl -T
-use 5.006;
+use 5.14;
 use strict;
 use warnings;
 use Test::More;
@@ -7,7 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'Feed::Panda' ) || print "Bail out!\n";
+    use_ok( 'Performance::Probability' ) || print "Bail out!\n";
 }
 
-diag( "Testing Feed::Panda $Feed::Panda::VERSION, Perl $], $^X" );
+diag( "Testing Performance::Probability $Performance::Probability::VERSION, Perl $], $^X" );
