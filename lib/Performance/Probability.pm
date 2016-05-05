@@ -31,6 +31,11 @@ has bought_price => (
     required => 1,
 );
 
+has pnl => (
+    is       => 'ro',
+    required => 1,
+);
+
 has _w_k => (
     is       => 'rw',
 );
@@ -43,9 +48,6 @@ has _p_k => (
     is       => 'rw',
 );
 
-sub _mean_x {
-
-}
 
 sub _mean_sigma_x {
 
