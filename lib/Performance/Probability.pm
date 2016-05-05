@@ -43,4 +43,28 @@ has _p_k => (
     is       => 'rw',
 );
 
+sub _mean_x {
+
+}
+
+sub _mean_sigma_x {
+
+}
+
+sub _variance_sigma_x {
+
+}
+
+sub _covariance {
+
+}
+
+sub _correlation {
+
+}
+
+sub get_performance_probability {
+
+}
+
 1;
