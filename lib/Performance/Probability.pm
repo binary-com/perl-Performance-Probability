@@ -134,4 +134,9 @@ sub get_performance_probability {
 
 }
 
+sub BUILDARGS {
+    my ($class, %args) = @_;
+
+    return \%args;
+}
 1;
