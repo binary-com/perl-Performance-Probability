@@ -5,9 +5,7 @@ use strict;
 use warnings;
 use Moo;
 
-use Math::Cephes::Matrix;
 use Math::SymbolicX::Statistics::Distributions;
-use Math::Vector::Real;    #try this vector library.
 
 our $VERSION = '0.01';
 
@@ -44,7 +42,6 @@ has _w_k => (
     is => 'rw',
 );
 
-#for vector replace math::cephes with math::vector::real.
 sub _build__w_k {
     my @w_k;
 
@@ -111,6 +108,8 @@ sub _variance_sigma_x {
     my @wk_pk;
     my @lk_pk;
 
+    my $sum;
+
     for (0 .. $# @{$self->_w_k}) {
         push @wk_square, $self->_w_k->[$_] * $self->_w_k->[$_];
         push @lk_square, $self->_l_k->[$_] * $self->_l_k->[$_];
@@ -120,10 +119,13 @@ sub _variance_sigma_x {
     }
 
     for (0 .. $#@wk_pk) {
-        $self->_p_k->[$_] * @wk_square[$_];
-        $self->_p_k->[$_] * @lk_square[$_];
+        $sum = $sum + $self->_p_k->[$_] * @wk_square[$_];
+        $sum = $sum + $self->_l_k->[$_] * @lk_square[$_];
+
+	$sum = $sum - @wk_pk[$_] + @lk-pk[$_];
     }
 
+    return $sum;
 }
 
 sub _covariance {
