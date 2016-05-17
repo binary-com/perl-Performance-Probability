@@ -168,6 +168,53 @@ sub _covariance {
     return 0.0;
 }
 
+sub _correlation {
+    my $self = shift;
+
+    my ($i, $j);
+    my @matrix;
+
+    for ($i = 0; $i < @{$self->start_time}; ++$i) {
+        for ($j = 0; $j < @{$self->sell_time}; ++$j) {
+            if ($i != $j and $self->underlying->[$i] eq $self->underlying->[$j]) {
+                $matrix[$i][$j] = {};
+                #print "$i $j". $underlying[$i] ." == ". $underlying[$j] . "\n";
+
+                #check for time overlap.
+                my ($start_i, $start_j, $sell_i, $sell_j);
+                $start_i = $self->start_time->[$i];
+                $start_j = $self->start_time->[$j];
+                $sell_i  = $self->sell_time->[$i];
+                $sell_j  = $self->sell_time->[$j];
+
+                if ($start_j->is_after($start_i) and $start_j->is_before($sell_i)) {
+                    #calculate a, b and c.
+                    my $a = $start_j->epoch - $start_i->epoch;
+                    my $b = $sell_i->epoch - $start_j->epoch;
+                    my $c = $sell_j->epoch - $sell_i->epoch;
+
+                    if ($c < 0) {
+                        $c = 0 - $c;
+                        $b = $sell_j->epoch - $start_i->epoch;
+                    }
+
+                    print "$i $j     a: $a b: $b c: $c \n";
+
+                    $matrix[$i][$j] = {
+                        a => $a,
+                        b => $b,
+                        c => $c
+                    };
+                }
+            } else {
+                #print "different underlying $i $j: ". $underlying[$i] ." != ". $underlying[$j]  ." \n";
+            }
+        }
+    }
+    #dummy value. replace with calculated value
+    return 0.01;
+}
+
 #only use for dev. will be replace with the real one.
 sub _dummy_bivar {
     return 0.01;
