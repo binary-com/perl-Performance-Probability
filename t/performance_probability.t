@@ -50,9 +50,44 @@ while (my $line = <$info>) {
 
 }
 
-foreach my $elem (@type) {
-    print "type: " . $elem . "\n";
+my ($i, $j);
+my @matrix;
+
+for($i=0;$i<@start;++$i) {
+        for($j=0;$j<@sell;++$j) {
+                	if ($i != $j  and  $underlying[$i] eq $underlying[$j]) {
+                        $matrix[$i][$j] = {};
+                        #print "$i $j". $underlying[$i] ." == ". $underlying[$j] . "\n";
+
+                        #check for time overlap.
+                        my ($start_i, $start_j, $sell_i, $sell_j );
+                        $start_i = $start[$i];
+                        $start_j = $start[$j];
+                        $sell_i  = $sell[$i];
+                        $sell_j  = $sell[$j];
+
+                        if ( $start_j->is_after($start_i) and $start_j->is_before($sell_i) ) {
+                                #calculate a, b and c.
+                                my $a = $start_j->epoch - $start_i->epoch;
+                                my $b = $sell_i->epoch - $start_j->epoch;
+                                my $c = $sell_j->epoch - $sell_i->epoch;
+
+                                if ( $c<0 ) {
+                                        $c = 0-$c ;
+                                        $b = $sell_j->epoch - $start_i->epoch;
+                                }
+
+                                print "a: $a b: $b c: $c \n";
+
+                                $matrix[$i][$j] = { a => $a, b => $b, c => $c };
+                        	}
+
+			} else {
+                        #print "different underlying $i $j: ". $underlying[$i] ." != ". $underlying[$j]  ." \n";
+                }
+        }
 }
+
 
 close $info;
 
