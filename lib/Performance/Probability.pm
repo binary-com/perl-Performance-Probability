@@ -5,8 +5,6 @@ use strict;
 use warnings;
 use Moo;
 
-use Math::SymbolicX::Statistics::Distributions;
-
 our $VERSION = '0.01';
 
 =head1 NAME
@@ -43,10 +41,14 @@ has _w_k => (
 );
 
 sub _build__w_k {
+    my $self = shift;
+
     my @w_k;
 
-    for (0 .. $# @{$self->payout}) {
-        my $tmp_w_k = $self->payout->[$_] - $self->bought_price->[$_];
+    my $i;
+
+    for ($i=0;$i<@{$self->payout};++$i) {
+        my $tmp_w_k = $self->payout->[$i] - $self->bought_price->[$i];
         push @w_k, $tmp_w_k;
     }
 
@@ -58,10 +60,13 @@ has _l_k => (
 );
 
 sub _build__l_k {
+    my $self = shift;
     my @l_k;
 
-    for (0 .. $# @{$self->bought_price}) {
-        push @l_k, 0 - $self->bought_price->[$_];
+    my $i;
+
+    for ($i=0; $i<@{$self->bought_price}; ++$i) {
+        push @l_k, 0 - $self->bought_price->[$i];
     }
 
     return \@l_k;
@@ -72,10 +77,13 @@ has _p_k => (
 );
 
 sub _build__p_k {
+    my $self = shift;
     my @p_k;
 
-    for (0 .. $# @{$self->bought_price}) {
-        my $tmp_pk = $self->payout_matrix->[$_] / $self->payout->[$_];
+    my $i;
+
+    for ($i=0; $i<@{$self->bought_price}; ++$i) {
+        my $tmp_pk = $self->payout_matrix->[$i] / $self->payout->[$i];
         push @p_k, $tmp_pk;
     }
 
@@ -84,24 +92,28 @@ sub _build__p_k {
 
 # sum( wk*pk + lk * (1-pk) )
 sub _mean_sigma_x {
+    my $self = shift;
     my @wk_pk;
     my @lk_pk;
 
-    for (0 .. $# @{$self->_w_k}) {
-        push @wk_pk, $self->_w_k->[$_] * $self->_p_k->[$_];
-        push @lk_pk, $self->_l_k->[$_] * (1 - $self->_p_k->[$_]);
+    my $i;
+
+    for ($i=0; $i<@{$self->_w_k}; ++$i) {
+        push @wk_pk, $self->_w_k->[$i] * $self->_p_k->[$i];
+        push @lk_pk, $self->_l_k->[$i] * (1 - $self->_p_k->[$i]);
     }
 
     my $sum;
 
-    for (0 .. $#@wk_pk) {
-        $sum = $sum + (@wk_pk[$_] + @lk_pk[$_]);
+    for ($i=0; $i<@wk_pk; ++$i) {
+        $sum = $sum + ($wk_pk[$i] + $lk_pk[$i]);
     }
 
     return $sum;
 }
 
 sub _variance_sigma_x {
+    my $self = shift;
     my @wk_square;
     my @lk_square;
 
@@ -110,26 +122,33 @@ sub _variance_sigma_x {
 
     my $sum;
 
-    for (0 .. $# @{$self->_w_k}) {
-        push @wk_square, $self->_w_k->[$_] * $self->_w_k->[$_];
-        push @lk_square, $self->_l_k->[$_] * $self->_l_k->[$_];
+    my $i;
 
-        push @wk_pk, $self->_w_k->[$_] * $self->_p_k->[$_];
-        push @lk_pk, $self->_l_k->[$_] * (1 - $self->_p_k->[$_]);
+    for ($i=0; $i<@{$self->_w_k}; ++$i) {
+        push @wk_square, $self->_w_k->[$i] * $self->_w_k->[$i];
+        push @lk_square, $self->_l_k->[$i] * $self->_l_k->[$i];
+
+        push @wk_pk, $self->_w_k->[$i] * $self->_p_k->[$i];
+        push @lk_pk, $self->_l_k->[$i] * (1 - $self->_p_k->[$i]);
     }
 
-    for (0 .. $#@wk_pk) {
-        $sum = $sum + $self->_p_k->[$_] * @wk_square[$_];
-        $sum = $sum + $self->_l_k->[$_] * @lk_square[$_];
+    for ($i=0; $i<@wk_pk; ++$i) {
+        $sum = $sum + $self->_p_k->[$i] * $wk_square[$i];
+        $sum = $sum + $self->_l_k->[$i] * $lk_square[$i];
 
-	$sum = $sum - @wk_pk[$_] + @lk-pk[$_];
+	$sum = $sum - $wk_pk[$i] + $lk_pk[$i];
     }
 
     return $sum;
 }
 
 sub _covariance {
+    return 0.0;
+}
 
+#only use for dev. will be replace with the real one.
+sub _dummy_bivar {
+	return 0.01;
 }
 
 sub get_performance_probability {
