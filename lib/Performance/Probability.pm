@@ -182,14 +182,14 @@ sub _build__pk {
     return \@p_k;
 }
 
-=item B<_mean_sigma_x>
+=item B<_mean>
 
 mean(sigma(x)) . x is profit and loss.
 
 =cut
 
 # sum( wk*pk + lk * (1-pk) )
-sub _mean_sigma_x {
+sub _mean {
     my $self = shift;
     my @wk_pk;
     my @lk_pk;
@@ -210,13 +210,13 @@ sub _mean_sigma_x {
     return $sum;
 }
 
-=item B<_variance_sigma_x>
+=item B<_variance>
 
 variance(sigma(x)) . x is profit and loss.
 
 =cut
 
-sub _variance_sigma_x {
+sub _variance {
     my $self = shift;
     my @wk_square;
     my @lk_square;
@@ -246,16 +246,21 @@ sub _variance_sigma_x {
     return $sum;
 }
 
-sub _correlation {
+=item B<_covariance>
+
+
+
+=cut
+
+sub _covariance {
     my $self = shift;
 
     my ($i, $j);
-    my @matrix;
+    my $covariance = 0;
 
     for ($i = 0; $i < @{$self->start_time}; ++$i) {
         for ($j = 0; $j < @{$self->sell_time}; ++$j) {
             if ($i != $j and $self->underlying->[$i] eq $self->underlying->[$j]) {
-                $matrix[$i][$j] = {};
 
                 #check for time overlap.
                 my ($start_i, $start_j, $sell_i, $sell_j);
@@ -284,23 +289,12 @@ sub _correlation {
 
                     print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . "   a: $a b: $b c: $c $i_strike $j_strike $corr_ij $p_ij\n";
 
-                    $matrix[$i][$j] = {
-                        a => $a,
-                        b => $b,
-                        c => $c
-                    };
                 }
-            } else {
-                #print "different underlying $i $j: ". $underlying[$i] ." != ". $underlying[$j]  ." \n";
             }
         }
     }
-    #dummy value. replace with calculated value
-    return 0.0;
-}
 
-sub _covariance {
-
+    return $covariance;
 }
 
 sub get_performance_probability {
