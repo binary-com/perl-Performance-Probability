@@ -248,7 +248,7 @@ sub _variance {
 
 =item B<_covariance>
 
-
+Sum of Covariance(i,j)
 
 =cut
 
@@ -302,8 +302,21 @@ sub _covariance {
     return $covariance;
 }
 
-sub get_performance_probability {
+=item B<_covariance>
 
+Calculate performance probability ( modified sharpe ratio );
+
+=cut
+
+sub get_performance_probability {
+    my $self = shift;
+
+    my $prob = 0;
+
+    $prob = $self->pnl * $self->_mean();
+    $prob = $prob / sqrt($self->_variance() + $self->covariance());
+
+    return $prob;
 }
 
 1;
