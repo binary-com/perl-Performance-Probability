@@ -290,7 +290,9 @@ sub _covariance {
                     my $covariance_ij =
                         ($p_ij - $self->_pk->[$i] * $self->_pk->[$j]) * ($self->_wk->[$i] - $self->_lk->[$i]) * ($self->_wk->[$j] - $self->_lk->[$j]);
 
-                    print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . "   a: $a b: $b c: $c $i_strike $j_strike $corr_ij $p_ij\n";
+                    $covariance = $covariance + $covariance_ij;
+
+                    print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . " $i_strike $j_strike $corr_ij $p_ij $covariance_ij\n";
 
                 }
             }
