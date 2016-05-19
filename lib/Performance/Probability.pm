@@ -32,7 +32,6 @@ Payout
 
 has payout => (
     is       => 'ro',
-    isa      => 'ArrayRef',
     required => 1,
 );
 
@@ -44,7 +43,6 @@ Bought price
 
 has bought_price => (
     is       => 'ro',
-    isa      => 'ArrayRef',
     required => 1,
 );
 
@@ -67,7 +65,6 @@ Contract type: Call or Put.
 
 has type => (
     is       => 'ro',
-    isa      => 'ArrayRef',
     required => 1,
 );
 
@@ -79,7 +76,6 @@ Contract's underlying
 
 has underlying => (
     is       => 'ro',
-    isa      => 'ArrayRef',
     required => 1,
 );
 
@@ -91,7 +87,6 @@ Contract's start time
 
 has start_time => (
     is       => 'ro',
-    isa      => 'ArrayRef',
     required => 1,
 );
 
@@ -103,7 +98,6 @@ Contract's sell time
 
 has sell_time => (
     is       => 'ro',
-    isa      => 'ArrayRef',
     required => 1,
 );
 
