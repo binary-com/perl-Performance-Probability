@@ -287,6 +287,9 @@ sub _covariance {
 
                     my $p_ij = Math::BivariateCDF::bivnor($i_strike, $j_strike, $corr_ij);
 
+                    my $covariance_ij =
+                        ($p_ij - $self->_pk->[$i] * $self->_pk->[$j]) * ($self->_wk->[$i] - $self->_lk->[$i]) * ($self->_wk->[$j] - $self->_lk->[$j]);
+
                     print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . "   a: $a b: $b c: $c $i_strike $j_strike $corr_ij $p_ij\n";
 
                 }
