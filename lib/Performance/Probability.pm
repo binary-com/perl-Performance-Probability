@@ -6,6 +6,7 @@ use warnings;
 use Moo;
 
 use Date::Utility;
+use Math::BivariateCDF;
 
 our $VERSION = '0.01';
 
@@ -23,40 +24,94 @@ Performance::Probability - The performance probability is a likelihood measure o
 
 =cut
 
+=item B<payout>
+
+Payout
+
+=cut
+
 has payout => (
     is       => 'ro',
+    isa      => 'ArrayRef',
     required => 1,
 );
 
+=item B<bought_price>
+
+Bought price
+
+=cut
+
 has bought_price => (
     is       => 'ro',
+    isa      => 'ArrayRef',
     required => 1,
 );
+
+=item B<pnl>
+
+PnL
+
+=cut
 
 has pnl => (
     is       => 'ro',
     required => 1,
 );
 
+=item B<type>
+
+Contract type: Call or Put.
+
+=cut
+
 has type => (
     is       => 'ro',
+    isa      => 'ArrayRef',
     required => 1,
 );
+
+=item B<underlying>
+
+Contract's underlying
+
+=cut
 
 has underlying => (
     is       => 'ro',
+    isa      => 'ArrayRef',
     required => 1,
 );
+
+=item B<start_time>
+
+Contract's start time
+
+=cut
 
 has start_time => (
     is       => 'ro',
+    isa      => 'ArrayRef',
     required => 1,
 );
 
+=item B<sell_time>
+
+Contract's sell time
+
+=cut
+
 has sell_time => (
     is       => 'ro',
+    isa      => 'ArrayRef',
     required => 1,
 );
+
+=item B<_w_k>
+
+Profit in case of winning. ( Payout minus bought price ).
+
+=cut
 
 has _w_k => (
     is => 'rw',
@@ -77,6 +132,12 @@ sub _build__w_k {
     return \@w_k;
 }
 
+=item B<_l_k>
+
+Loss in case of losing. (Minus bought price).
+
+=cut
+
 has _l_k => (
     is => 'rw',
 );
@@ -94,6 +155,12 @@ sub _build__l_k {
     return \@l_k;
 }
 
+=item B<_p_k>
+
+Winning probability. ( Bought price / Payout ).
+
+=cut
+
 has _p_k => (
     is => 'rw',
 );
@@ -105,12 +172,18 @@ sub _build__p_k {
     my $i;
 
     for ($i = 0; $i < @{$self->bought_price}; ++$i) {
-        my $tmp_pk = $self->payout_matrix->[$i] / $self->payout->[$i];
+        my $tmp_pk = $self->bought_price->[$i] / $self->payout->[$i];
         push @p_k, $tmp_pk;
     }
 
     return \@p_k;
 }
+
+=item B<_mean_sigma_x>
+
+mean(sigma(x)) . x is profit and loss.
+
+=cut
 
 # sum( wk*pk + lk * (1-pk) )
 sub _mean_sigma_x {
@@ -120,12 +193,12 @@ sub _mean_sigma_x {
 
     my $i;
 
+    my $sum;
+
     for ($i = 0; $i < @{$self->_w_k}; ++$i) {
         push @wk_pk, $self->_w_k->[$i] * $self->_p_k->[$i];
         push @lk_pk, $self->_l_k->[$i] * (1 - $self->_p_k->[$i]);
     }
-
-    my $sum;
 
     for ($i = 0; $i < @wk_pk; ++$i) {
         $sum = $sum + ($wk_pk[$i] + $lk_pk[$i]);
@@ -133,6 +206,12 @@ sub _mean_sigma_x {
 
     return $sum;
 }
+
+=item B<_variance_sigma_x>
+
+variance(sigma(x)) . x is profit and loss.
+
+=cut
 
 sub _variance_sigma_x {
     my $self = shift;
@@ -162,10 +241,6 @@ sub _variance_sigma_x {
     }
 
     return $sum;
-}
-
-sub _covariance {
-    return 0.0;
 }
 
 sub _correlation {
@@ -215,9 +290,8 @@ sub _correlation {
     return 0.01;
 }
 
-#only use for dev. will be replace with the real one.
-sub _dummy_bivar {
-    return 0.01;
+sub _covariance {
+
 }
 
 sub get_performance_probability {
