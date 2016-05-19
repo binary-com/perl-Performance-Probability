@@ -275,7 +275,14 @@ sub _correlation {
                         $b = $sell_j->epoch - $start_i->epoch;
                     }
 
-                    print "$i $j     a: $a b: $b c: $c \n";
+                    my $i_strike = Math::Gauss::XS::inv_cdf($self->_pk->[$i]);
+                    my $j_strike = Math::Gauss::XS::inv_cdf($self->_pk->[$j]);
+
+                    my $corr_ij = $b / (sqrt($a + $b) * sqrt($b + $c));
+
+                    my $p_ij = Math::BivariateCDF::bivnor($i_strike, $j_strike, $corr_ij);
+
+                    print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . "   a: $a b: $b c: $c $i_strike $j_strike $corr_ij $p_ij\n";
 
                     $matrix[$i][$j] = {
                         a => $a,
