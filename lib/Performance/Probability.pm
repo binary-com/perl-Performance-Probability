@@ -7,8 +7,9 @@ use Moo;
 
 use Date::Utility;
 use Math::BivariateCDF;
+use Math::Gauss::XS;
 
-our $VERSION = '0.01';
+our $VERSION = '0.01_1';
 
 =head1 NAME
 
@@ -16,7 +17,7 @@ Performance::Probability - The performance probability is a likelihood measure o
 
 =head1 VERSION
 
-0.01
+0.01_1
 
 =head1 SYNOPSYS
 
@@ -24,9 +25,11 @@ Performance::Probability - The performance probability is a likelihood measure o
 
 =cut
 
-=item B<payout>
+=head1 ATTRIBUTES
 
-Payout
+=head2 payout
+
+Payout 
 
 =cut
 
@@ -35,7 +38,7 @@ has payout => (
     required => 1,
 );
 
-=item B<bought_price>
+=head2 bought_price
 
 Bought price
 
@@ -46,7 +49,7 @@ has bought_price => (
     required => 1,
 );
 
-=item B<pnl>
+=head2 pnl
 
 PnL
 
@@ -57,9 +60,9 @@ has pnl => (
     required => 1,
 );
 
-=item B<type>
+=head2 type
 
-Contract type: Call or Put.
+Type of contract. Call or Put.
 
 =cut
 
@@ -68,9 +71,9 @@ has type => (
     required => 1,
 );
 
-=item B<underlying>
+=head2 underlying
 
-Contract's underlying
+Underlying asset
 
 =cut
 
@@ -79,9 +82,9 @@ has underlying => (
     required => 1,
 );
 
-=item B<start_time>
+=head2 start_time
 
-Contract's start time
+Contract's start time.
 
 =cut
 
@@ -90,9 +93,9 @@ has start_time => (
     required => 1,
 );
 
-=item B<sell_time>
+=head2 sell_time
 
-Contract's sell time
+Contract's sell time.
 
 =cut
 
@@ -107,11 +110,13 @@ Profit in case of winning. ( Payout minus bought price ).
 
 =cut
 
-has _w_k => (
-    is => 'rw',
+has _wk => (
+    is      => 'rw',
+    lazy    => 1,
+    builder => '_build__wk',
 );
 
-sub _build__w_k {
+sub _build__wk {
     my $self = shift;
 
     my @w_k;
@@ -123,6 +128,8 @@ sub _build__w_k {
         push @w_k, $tmp_w_k;
     }
 
+    print "wk \n";
+
     return \@w_k;
 }
 
@@ -132,11 +139,13 @@ Loss in case of losing. (Minus bought price).
 
 =cut
 
-has _l_k => (
-    is => 'rw',
+has _lk => (
+    is      => 'rw',
+    lazy    => 1,
+    builder => '_build__lk',
 );
 
-sub _build__l_k {
+sub _build__lk {
     my $self = shift;
     my @l_k;
 
@@ -145,6 +154,8 @@ sub _build__l_k {
     for ($i = 0; $i < @{$self->bought_price}; ++$i) {
         push @l_k, 0 - $self->bought_price->[$i];
     }
+
+    print "lk \n";
 
     return \@l_k;
 }
@@ -155,11 +166,13 @@ Winning probability. ( Bought price / Payout ).
 
 =cut
 
-has _p_k => (
-    is => 'rw',
+has _pk => (
+    is      => 'rw',
+    lazy    => 1,
+    builder => '_build__pk',
 );
 
-sub _build__p_k {
+sub _build__pk {
     my $self = shift;
     my @p_k;
 
@@ -169,6 +182,8 @@ sub _build__p_k {
         my $tmp_pk = $self->bought_price->[$i] / $self->payout->[$i];
         push @p_k, $tmp_pk;
     }
+
+    print "pk \n";
 
     return \@p_k;
 }
@@ -187,16 +202,22 @@ sub _mean_sigma_x {
 
     my $i;
 
-    my $sum;
+    my $sum = 0;
 
-    for ($i = 0; $i < @{$self->_w_k}; ++$i) {
-        push @wk_pk, $self->_w_k->[$i] * $self->_p_k->[$i];
-        push @lk_pk, $self->_l_k->[$i] * (1 - $self->_p_k->[$i]);
+    for ($i = 0; $i < @{$self->_pk}; ++$i) {
+        print $self->_pk->[$i] . "\n";
+    }
+
+    for ($i = 0; $i < @{$self->_wk}; ++$i) {
+        push @wk_pk, $self->_wk->[$i] * $self->_pk->[$i];
+        push @lk_pk, $self->_lk->[$i] * (1 - $self->_pk->[$i]);
     }
 
     for ($i = 0; $i < @wk_pk; ++$i) {
         $sum = $sum + ($wk_pk[$i] + $lk_pk[$i]);
     }
+
+    print "mean \n";
 
     return $sum;
 }
@@ -215,24 +236,26 @@ sub _variance_sigma_x {
     my @wk_pk;
     my @lk_pk;
 
-    my $sum;
+    my $sum = 0;
 
     my $i;
 
-    for ($i = 0; $i < @{$self->_w_k}; ++$i) {
-        push @wk_square, $self->_w_k->[$i] * $self->_w_k->[$i];
-        push @lk_square, $self->_l_k->[$i] * $self->_l_k->[$i];
+    for ($i = 0; $i < @{$self->_wk}; ++$i) {
+        push @wk_square, $self->_wk->[$i] * $self->_wk->[$i];
+        push @lk_square, $self->_lk->[$i] * $self->_lk->[$i];
 
-        push @wk_pk, $self->_w_k->[$i] * $self->_p_k->[$i];
-        push @lk_pk, $self->_l_k->[$i] * (1 - $self->_p_k->[$i]);
+        push @wk_pk, $self->_wk->[$i] * $self->_pk->[$i];
+        push @lk_pk, $self->_lk->[$i] * (1 - $self->_pk->[$i]);
     }
 
     for ($i = 0; $i < @wk_pk; ++$i) {
-        $sum = $sum + $self->_p_k->[$i] * $wk_square[$i];
-        $sum = $sum + $self->_l_k->[$i] * $lk_square[$i];
+        $sum = $sum + $self->_pk->[$i] * $wk_square[$i];
+        $sum = $sum + $self->_lk->[$i] * $lk_square[$i];
 
         $sum = $sum - $wk_pk[$i] + $lk_pk[$i];
     }
+
+    print "variance \n";
 
     return $sum;
 }
@@ -290,12 +313,6 @@ sub _covariance {
 
 sub get_performance_probability {
 
-}
-
-sub BUILDARGS {
-    my ($class, %args) = @_;
-
-    return \%args;
 }
 
 1;
