@@ -128,8 +128,6 @@ sub _build__wk {
         push @w_k, $tmp_w_k;
     }
 
-    print "wk \n";
-
     return \@w_k;
 }
 
@@ -154,8 +152,6 @@ sub _build__lk {
     for ($i = 0; $i < @{$self->bought_price}; ++$i) {
         push @l_k, 0 - $self->bought_price->[$i];
     }
-
-    print "lk \n";
 
     return \@l_k;
 }
@@ -183,8 +179,6 @@ sub _build__pk {
         push @p_k, $tmp_pk;
     }
 
-    print "pk \n";
-
     return \@p_k;
 }
 
@@ -204,10 +198,6 @@ sub _mean_sigma_x {
 
     my $sum = 0;
 
-    for ($i = 0; $i < @{$self->_pk}; ++$i) {
-        print $self->_pk->[$i] . "\n";
-    }
-
     for ($i = 0; $i < @{$self->_wk}; ++$i) {
         push @wk_pk, $self->_wk->[$i] * $self->_pk->[$i];
         push @lk_pk, $self->_lk->[$i] * (1 - $self->_pk->[$i]);
@@ -216,8 +206,6 @@ sub _mean_sigma_x {
     for ($i = 0; $i < @wk_pk; ++$i) {
         $sum = $sum + ($wk_pk[$i] + $lk_pk[$i]);
     }
-
-    print "mean \n";
 
     return $sum;
 }
@@ -255,8 +243,6 @@ sub _variance_sigma_x {
         $sum = $sum - $wk_pk[$i] + $lk_pk[$i];
     }
 
-    print "variance \n";
-
     return $sum;
 }
 
@@ -270,7 +256,6 @@ sub _correlation {
         for ($j = 0; $j < @{$self->sell_time}; ++$j) {
             if ($i != $j and $self->underlying->[$i] eq $self->underlying->[$j]) {
                 $matrix[$i][$j] = {};
-                #print "$i $j". $underlying[$i] ." == ". $underlying[$j] . "\n";
 
                 #check for time overlap.
                 my ($start_i, $start_j, $sell_i, $sell_j);
@@ -304,7 +289,7 @@ sub _correlation {
         }
     }
     #dummy value. replace with calculated value
-    return 0.01;
+    return 0.0;
 }
 
 sub _covariance {
