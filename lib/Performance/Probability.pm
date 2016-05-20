@@ -184,63 +184,38 @@ sub _build__pk {
 
 =item B<_mean>
 
-mean(sigma(x)) . x is profit and loss.
+Sigma( profit * winning probability + loss * losing probability ).
 
 =cut
 
 # sum( wk*pk + lk * (1-pk) )
 sub _mean {
     my $self = shift;
-    my @wk_pk;
-    my @lk_pk;
 
     my $i;
-
     my $sum = 0;
 
     for ($i = 0; $i < @{$self->_wk}; ++$i) {
-        push @wk_pk, $self->_wk->[$i] * $self->_pk->[$i];
-        push @lk_pk, $self->_lk->[$i] * (1 - $self->_pk->[$i]);
-    }
-
-    for ($i = 0; $i < @wk_pk; ++$i) {
-        $sum = $sum + ($wk_pk[$i] + $lk_pk[$i]);
+        $sum = $sum + ($self->_wk->[$i] * $self->_pk->[$i]) + ($self->_lk->[$i] * (1 - $self->_pk->[$i]));
     }
 
     return $sum;
 }
 
-=item B<_variance>
+=item B<_variance_x_square>
 
-variance(sigma(x)) . x is profit and loss.
+
 
 =cut
 
-sub _variance {
+sub _variance_x_square {
     my $self = shift;
-    my @wk_square;
-    my @lk_square;
-
-    my @wk_pk;
-    my @lk_pk;
 
     my $sum = 0;
-
     my $i;
 
     for ($i = 0; $i < @{$self->_wk}; ++$i) {
-        push @wk_square, $self->_wk->[$i] * $self->_wk->[$i];
-        push @lk_square, $self->_lk->[$i] * $self->_lk->[$i];
-
-        push @wk_pk, $self->_wk->[$i] * $self->_pk->[$i];
-        push @lk_pk, $self->_lk->[$i] * (1 - $self->_pk->[$i]);
-    }
-
-    for ($i = 0; $i < @wk_pk; ++$i) {
-        $sum = $sum + $self->_pk->[$i] * $wk_square[$i];
-        $sum = $sum + $self->_lk->[$i] * $lk_square[$i];
-
-        $sum = $sum - $wk_pk[$i] + $lk_pk[$i];
+	$sum = $sum + (($self->_wk->[$i] ** 2) * $self->_pk->[$i]) + (($self->_lk->[$i] ** 2) * (1 - $self->_pk->[$i]));
     }
 
     return $sum;
@@ -313,12 +288,14 @@ sub get_performance_probability {
 
     my $prob = 0;
 
-    $prob = $self->pnl * $self->_mean();
-    $prob = $prob / sqrt($self->_variance() + 2.0 * $self->_covariance());
+    my $mean = $self->_mean();
+
+    $prob = $self->pnl * $mean;
+    $prob = $prob / sqrt(($self->_variance_x_square() - $mean) + 2.0 * $self->_covariance());
 
     $prob = 1.0 - Math::Gauss::XS::cdf($prob, 0.0, 1.0);
 
-    print "$prob";
+    print "$prob \n ";
 
     return $prob;
 }
