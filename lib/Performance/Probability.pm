@@ -303,4 +303,12 @@ sub get_performance_probability {
     return $prob;
 }
 
+sub BUILD {
+    my ($self) = @_;
+ 
+    if (scalar(@{$self->payout}) > 0) {
+        print "Test\n";
+    }
+}
+
 1;
