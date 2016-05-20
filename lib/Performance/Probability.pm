@@ -215,7 +215,7 @@ sub _variance_x_square {
     my $i;
 
     for ($i = 0; $i < @{$self->_wk}; ++$i) {
-	$sum = $sum + (($self->_wk->[$i] ** 2) * $self->_pk->[$i]) + (($self->_lk->[$i] ** 2) * (1 - $self->_pk->[$i]));
+        $sum = $sum + (($self->_wk->[$i]**2) * $self->_pk->[$i]) + (($self->_lk->[$i]**2) * (1 - $self->_pk->[$i]));
     }
 
     return $sum;
@@ -259,6 +259,10 @@ sub _covariance {
                     my $j_strike = Math::Gauss::XS::inv_cdf($self->_pk->[$j]);
 
                     my $corr_ij = $b / (sqrt($a + $b) * sqrt($b + $c));
+
+                    if ($self->type->[$i] ne $self->type->[$j]) {
+                        $corr_ij = -1 * $corr_ij;
+                    }
 
                     my $p_ij = Math::BivariateCDF::bivnor($i_strike, $j_strike, $corr_ij);
 
