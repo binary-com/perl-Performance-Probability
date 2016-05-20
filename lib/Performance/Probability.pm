@@ -188,7 +188,6 @@ Sigma( profit * winning probability + loss * losing probability ).
 
 =cut
 
-# sum( wk*pk + lk * (1-pk) )
 sub _mean {
     my $self = shift;
 
@@ -204,7 +203,7 @@ sub _mean {
 
 =item B<_variance_x_square>
 
-
+Sigma( (profit**2) * winning probability + (loss**2) * losing probability ).
 
 =cut
 
@@ -223,7 +222,7 @@ sub _variance_x_square {
 
 =item B<_covariance>
 
-Sum of Covariance(i,j)
+Sum of Covariance(i,j). See the documentation for the details.
 
 =cut
 
