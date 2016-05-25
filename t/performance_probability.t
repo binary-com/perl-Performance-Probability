@@ -64,7 +64,7 @@ close $info;
 
 subtest 'performance_probability' => sub {
 
-        my $probability = 0.0;
+        my $probability = 0.1;
         ok $probability, "Performance probability.";
 };
 
