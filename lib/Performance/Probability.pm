@@ -255,19 +255,19 @@ sub _covariance {
 
                 if ($start_j->is_after($start_i) and $start_j->is_before($sell_i)) {
                     #calculate a, b and c.
-                    my $a = $start_j->epoch - $start_i->epoch;
-                    my $b = $sell_i->epoch - $start_j->epoch;
-                    my $c = $sell_j->epoch - $sell_i->epoch;
+                    my $a  = $start_j->epoch - $start_i->epoch;
+                    my $b2 = $sell_i->epoch - $start_j->epoch;
+                    my $c  = $sell_j->epoch - $sell_i->epoch;
 
                     if ($c < 0) {
-                        $c = 0 - $c;
-                        $b = $sell_j->epoch - $start_i->epoch;
+                        $c  = 0 - $c;
+                        $b2 = $sell_j->epoch - $start_i->epoch;
                     }
 
                     my $i_strike = Math::Gauss::XS::inv_cdf($self->_pk->[$i]);
                     my $j_strike = Math::Gauss::XS::inv_cdf($self->_pk->[$j]);
 
-                    my $corr_ij = $b / (sqrt($a + $b) * sqrt($b + $c));
+                    my $corr_ij = $b2 / (sqrt($a + $b2) * sqrt($b2 + $c));
 
                     if ($self->type->[$i] ne $self->type->[$j]) {
                         $corr_ij = -1 * $corr_ij;
@@ -317,14 +317,6 @@ sub get_performance_probability {
     print "$prob \n ";
 
     return $prob;
-}
-
-sub BUILD {
-    my ($self) = @_;
-
-    if (scalar(@{$self->payout}) > 0) {
-        print "Test\n";
-    }
 }
 
 1;
