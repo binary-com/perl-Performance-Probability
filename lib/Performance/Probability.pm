@@ -264,8 +264,8 @@ sub _covariance {
                         $b2 = $sell_j->epoch - $start_i->epoch;
                     }
 
-                    my $i_strike = Math::Gauss::XS::inv_cdf($self->_pk->[$i]);
-                    my $j_strike = Math::Gauss::XS::inv_cdf($self->_pk->[$j]);
+                    my $i_strike = 0.0 - Math::Gauss::XS::inv_cdf($self->_pk->[$i]);
+                    my $j_strike = 0.0 - Math::Gauss::XS::inv_cdf($self->_pk->[$j]);
 
                     my $corr_ij = $b2 / (sqrt($a + $b2) * sqrt($b2 + $c));
 
@@ -290,6 +290,8 @@ sub _covariance {
             }
         }
     }
+
+    print "Cov: $covariance \n";
 
     return $covariance;
 }
