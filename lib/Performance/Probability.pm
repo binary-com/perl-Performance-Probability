@@ -284,7 +284,7 @@ sub _covariance {
                     my $time_j = $start_j->datetime_yyyymmdd_hhmmss;
 
 #                    print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . " $i_strike $j_strike $corr_ij $p_ij $covariance_ij\n";
-                    print "$i $j $time_i $time_j cov: $covariance_ij p_ww: $p_ij $i_strike $j_strike abc:$a $b $c $corr_ij\n";
+                    print "$i $j cov: $covariance_ij p_ww: $p_ij i_strike: $i_strike j_strike: $j_strike abc:$a $b2 $c corr: $corr_ij\n";
 
                 }
             }
