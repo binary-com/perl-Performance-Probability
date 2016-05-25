@@ -10,6 +10,7 @@ use Test::FailWarnings;
 use Test::More;
 
 BEGIN {
+
     package Math::BivariateCDF;
     1;
     $INC{'Math/BivariateCDF.pm'} = 1;
@@ -64,8 +65,9 @@ close $info;
 
 subtest 'performance_probability' => sub {
 
-        my $probability = 0.1;
-        ok $probability, "Performance probability.";
+    #add test case inside here
+    my $probability = 0.1;
+    ok $probability, "Performance probability.";
 };
 
 done_testing;
