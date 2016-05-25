@@ -5,6 +5,16 @@ use warnings;
 
 use Date::Utility;
 
+use Test::Most;
+use Test::FailWarnings;
+use Test::More;
+
+BEGIN {
+    package Math::BivariateCDF;
+    1;
+    $INC{'Math/BivariateCDF.pm'} = 1;
+}
+
 my $file = 't/CR373909.csv';
 open my $info, $file or die "Could not open $file: $!";
 
@@ -52,3 +62,10 @@ while (my $line = <$info>) {
 
 close $info;
 
+subtest 'performance_probability' => sub {
+
+        my $probability = 0.0;
+        ok $probability, "Performance probability.";
+};
+
+done_testing;
