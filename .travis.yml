@@ -1,25 +1,14 @@
 #sudo: false
 language: perl
 perl:
-    - "5.14"
+    - "5.14.4"
 install:
     # install prereqs
-    - "cpanm Moose"
+    - "cpanm Moo"
     - "cpanm Date::Utility"
     - "cpanm Format::Util::Numbers"
-    - "cpanm File::ShareDir"
-    - "cpanm DateTime"
-    - "cpanm Carp"
-    - "cpanm feature"
-    - "cpanm Path::Tiny"
-    - "cpanm File::Basename"
-    - "cpanm Template"
     - "cpanm Array::Utils"
-    - "cpanm Text::CSV::Slurp"
-    - "cpanm Scalar::Util"
     - "cpanm Test::Perl::Critic"
-    - "cpanm MooseX::Singleton"
-    - "cpanm YAML::CacheLoader"
-    - "cpanm MIME::Base64"
+    - "cpanm Math::Gauss::XS"
 script:
     - "perl Makefile.PL && make test" 
