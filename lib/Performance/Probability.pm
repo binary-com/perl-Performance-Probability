@@ -195,7 +195,17 @@ sub _mean {
     my $sum = 0;
 
     for ($i = 0; $i < @{$self->_wk}; ++$i) {
+
         $sum = $sum + ($self->_wk->[$i] * $self->_pk->[$i]) + ($self->_lk->[$i] * (1 - $self->_pk->[$i]));
+
+        my $cont_mean = ($self->_wk->[$i] * $self->_pk->[$i]) + ($self->_lk->[$i] * (1 - $self->_pk->[$i]));
+
+        my $w = $self->_wk->[$i];
+        my $l = $self->_lk->[$i];
+
+        my $p = $self->_pk->[$i];
+
+        #print "w: $w l:$l p:$p  ind mean: $cont_mean \n";
     }
 
     return $sum;
@@ -270,7 +280,11 @@ sub _covariance {
 
                     $covariance = $covariance + $covariance_ij;
 
-                    print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . " $i_strike $j_strike $corr_ij $p_ij $covariance_ij\n";
+                    my $time_i = $start_i->datetime_yyyymmdd_hhmmss;
+                    my $time_j = $start_j->datetime_yyyymmdd_hhmmss;
+
+#                    print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . " $i_strike $j_strike $corr_ij $p_ij $covariance_ij\n";
+                    print "$i $j $time_i $time_j cov: $covariance_ij p_ww: $p_ij $i_strike $j_strike abc:$a $b $c $corr_ij\n";
 
                 }
             }
@@ -293,8 +307,10 @@ sub get_performance_probability {
 
     my $mean = $self->_mean();
 
-    $prob = $self->pnl * $mean;
-    $prob = $prob / sqrt(($self->_variance_x_square() - $mean) + 2.0 * $self->_covariance());
+    $prob = $self->pnl - $mean;
+    $prob = $prob / sqrt(($self->_variance_x_square() - ($mean**2.0)) + 2.0 * $self->_covariance());
+
+    print "before cdf : $prob \n";
 
     $prob = 1.0 - Math::Gauss::XS::cdf($prob, 0.0, 1.0);
 
@@ -305,7 +321,7 @@ sub get_performance_probability {
 
 sub BUILD {
     my ($self) = @_;
- 
+
     if (scalar(@{$self->payout}) > 0) {
         print "Test\n";
     }
