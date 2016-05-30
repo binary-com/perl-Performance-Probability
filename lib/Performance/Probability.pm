@@ -197,15 +197,6 @@ sub _mean {
     for ($i = 0; $i < @{$self->_wk}; ++$i) {
 
         $sum = $sum + ($self->_wk->[$i] * $self->_pk->[$i]) + ($self->_lk->[$i] * (1 - $self->_pk->[$i]));
-
-        my $cont_mean = ($self->_wk->[$i] * $self->_pk->[$i]) + ($self->_lk->[$i] * (1 - $self->_pk->[$i]));
-
-        my $w = $self->_wk->[$i];
-        my $l = $self->_lk->[$i];
-
-        my $p = $self->_pk->[$i];
-
-        #print "w: $w l:$l p:$p  ind mean: $cont_mean \n";
     }
 
     return $sum;
@@ -254,20 +245,21 @@ sub _covariance {
                 $sell_j  = $self->sell_time->[$j];
 
                 if ($start_j->is_after($start_i) and $start_j->is_before($sell_i)) {
-                    #calculate a, b and c.
-                    my $a  = $start_j->epoch - $start_i->epoch;
-                    my $b2 = $sell_i->epoch - $start_j->epoch;
-                    my $c  = $sell_j->epoch - $sell_i->epoch;
+                    #calculate a, b and c interval. please see the documentation for details
+                    #of a, b and c.
+                    my $a_interval = $start_j->epoch - $start_i->epoch;
+                    my $b_interval = $sell_i->epoch - $start_j->epoch;
+                    my $c_interval = $sell_j->epoch - $sell_i->epoch;
 
-                    if ($c < 0) {
-                        $c  = 0 - $c;
-                        $b2 = $sell_j->epoch - $start_i->epoch;
+                    if ($c_interval < 0) {
+                        $c_interval = 0 - $c_interval;
+                        $b_interval = $sell_j->epoch - $start_i->epoch;
                     }
 
                     my $i_strike = 0.0 - Math::Gauss::XS::inv_cdf($self->_pk->[$i]);
                     my $j_strike = 0.0 - Math::Gauss::XS::inv_cdf($self->_pk->[$j]);
 
-                    my $corr_ij = $b2 / (sqrt($a + $b2) * sqrt($b2 + $c));
+                    my $corr_ij = $b_interval / (sqrt($a_interval + $b_interval) * sqrt($b_interval + $c_interval));
 
                     if ($self->type->[$i] ne $self->type->[$j]) {
                         $corr_ij = -1 * $corr_ij;
@@ -282,21 +274,15 @@ sub _covariance {
 
                     my $time_i = $start_i->datetime_yyyymmdd_hhmmss;
                     my $time_j = $start_j->datetime_yyyymmdd_hhmmss;
-
-#                    print "$i $j pi: " . $self->_pk->[$i] . " pj: " . $self->_pk->[$j] . " $i_strike $j_strike $corr_ij $p_ij $covariance_ij\n";
-                    print "$i $j cov: $covariance_ij p_ww: $p_ij i_strike: $i_strike j_strike: $j_strike abc:$a $b2 $c corr: $corr_ij\n";
-
                 }
             }
         }
     }
 
-    print "Cov: $covariance \n";
-
     return $covariance;
 }
 
-=item B<_covariance>
+=item B<get_performance_probability>
 
 Calculate performance probability ( modified sharpe ratio );
 
@@ -312,11 +298,7 @@ sub get_performance_probability {
     $prob = $self->pnl - $mean;
     $prob = $prob / sqrt(($self->_variance_x_square() - ($mean**2.0)) + 2.0 * $self->_covariance());
 
-    print "before cdf : $prob \n";
-
     $prob = 1.0 - Math::Gauss::XS::cdf($prob, 0.0, 1.0);
-
-    print "$prob \n ";
 
     return $prob;
 }

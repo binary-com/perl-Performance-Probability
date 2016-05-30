@@ -15,7 +15,8 @@ To install this module, run the following commands:
 Dependencies
 ============
 
-* dependency list here
+* https://github.com/binary-com/perl-Math-Gauss-XS
+* https://github.com/binary-com/perl-Math-BivariateCDF
 
 Contact
 ======
