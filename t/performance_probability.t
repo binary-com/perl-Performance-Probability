@@ -18,7 +18,7 @@ BEGIN {
 
 use Performance::Probability;
 
-my $file = 't/CR373909.csv';
+my $file = 't/test_contract1.csv';
 open my $info, $file or die "Could not open $file: $!";
 
 my $data;
