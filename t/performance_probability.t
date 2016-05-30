@@ -16,6 +16,8 @@ BEGIN {
     $INC{'Math/BivariateCDF.pm'} = 1;
 }
 
+use Performance::Probability;
+
 my $file = 't/CR373909.csv';
 open my $info, $file or die "Could not open $file: $!";
 
