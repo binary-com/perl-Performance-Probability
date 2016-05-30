@@ -68,6 +68,19 @@ subtest 'performance_probability' => sub {
     #add test case inside here
     my $probability = 0.1;
     ok $probability, "Performance probability.";
+
+    my $performance_probability_obj = Performance::Probability->new({
+        payout       => \@payout,
+        bought_price => \@buy,
+        pnl          => 20000.0,
+        type         => \@type,
+        underlying   => \@underlying,
+        start_time   => \@start,
+        sell_time    => \@sell,
+    });
+
+    my $mean = $performance_probability_obj->_mean();
+    ok $mean, "Mean in Performance probability calculation.";
 };
 
 done_testing;
