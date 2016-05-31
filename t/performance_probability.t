@@ -18,7 +18,7 @@ BEGIN {
 
 use Performance::Probability;
 
-my $file = 't/test_contract1.csv';
+my $file = 't/test_contracts_0.csv';
 open my $info, $file or die "Could not open $file: $!";
 
 my $data;
@@ -43,13 +43,12 @@ while (my $line = <$info>) {
     #tokenize contract data.
     my @tokens = split(/,/, $data);
 
-    my $financial_market_bet_id = $tokens[2];
-    my $bet_type                = $tokens[3];
-    my $buy_price               = $tokens[4];
-    my $payout_price            = $tokens[5];
-    my $start_time              = $tokens[7];
-    my $underlying_symbol       = $tokens[8];
-    my $sell_time               = $tokens[11];
+    my $bet_type                = $tokens[2];
+    my $buy_price               = $tokens[3];
+    my $payout_price            = $tokens[4];
+    my $start_time              = $tokens[6];
+    my $underlying_symbol       = $tokens[7];
+    my $sell_time               = $tokens[8];
 
     my $dt_start_time = Date::Utility->new($start_time);
     my $dt_sell_time  = Date::Utility->new($sell_time);
@@ -78,9 +77,6 @@ subtest 'performance_probability' => sub {
         start_time   => \@start,
         sell_time    => \@sell,
     });
-
-    my $mean = $performance_probability_obj->_mean();
-    ok $mean, "Mean in Performance probability calculation.";
 
     my $variance = $performance_probability_obj->_variance_x_square();
     ok $variance, "Variance in Performance probability calculation.";
