@@ -1,4 +1,4 @@
-purchase_time,currency_code,bet_type,buy_price,payout_price,sell_price,start_time,underlying_symbol,sell_time
+purchase_time,currency_code,options_type,buy_price,payout_price,sell_price,start_time,underlying_symbol,sell_time
 2016-05-30 00:00:00,USD,CALL,10,100,100,2016-05-30 00:00:00,PZero_Uncorrelated,2016-05-30 00:14:00
 2016-05-30 00:14:00,USD,CALL,10,100,100,2016-05-30 00:14:00,PZero_Uncorrelated,2016-05-30 00:28:00
 2016-05-30 00:28:00,USD,CALL,10,100,100,2016-05-30 00:28:00,PZero_Uncorrelated,2016-05-30 00:43:00

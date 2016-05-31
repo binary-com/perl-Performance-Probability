@@ -56,8 +56,8 @@ while (my $line = <$info>) {
     push @type,       $bet_type;
     push @buy,        $buy_price;
     push @payout,     $payout_price;
-    push @start,      $dt_start_time;
-    push @sell,       $dt_sell_time;
+    push @start,      $dt_start_time->epoch;
+    push @sell,       $dt_sell_time->epoch;
     push @underlying, $underlying_symbol;
 
 }
@@ -68,7 +68,7 @@ subtest 'performance_probability' => sub {
 
     #add test case inside here
 
-    my $performance_probability_obj = Performance::Probability->new({
+    my $performance_probability = Performance::Probability::get_performance_probability({
         payout       => \@payout,
         bought_price => \@buy,
         pnl          => 20000.0,
@@ -78,8 +78,7 @@ subtest 'performance_probability' => sub {
         sell_time    => \@sell,
     });
 
-    my $variance = $performance_probability_obj->_variance_x_square();
-    ok $variance, "Variance in Performance probability calculation.";
+    ok $performance_probability, "Performance probability calculation.";
 };
 
 done_testing;
