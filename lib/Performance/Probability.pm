@@ -148,8 +148,8 @@ sub _covariance {
                         $b_interval = $sell_j - $start_i;
                     }
 
-                    my $i_strike = 0.0 - Math::Gauss::XS::inv_cdf($self->_pk->[$i]);
-                    my $j_strike = 0.0 - Math::Gauss::XS::inv_cdf($self->_pk->[$j]);
+                    my $i_strike = 0.0 - Math::Gauss::XS::inv_cdf($pk->[$i]);
+                    my $j_strike = 0.0 - Math::Gauss::XS::inv_cdf($pk->[$j]);
 
                     my $corr_ij = $b_interval / (sqrt($a_interval + $b_interval) * sqrt($b_interval + $c_interval));
 
@@ -191,9 +191,9 @@ sub get_performance_probability {
     my $bought_price = $params->{bought_price};
     my $payout       = $params->{payout};
 
-    my $pk = $self->_build_pk($bought_price, $payout);
-    my $lk = $self->_build_lk($bought_price);
-    my $wk = $self->_build_wk($bought_price, $payout);
+    my $pk = _build_pk($bought_price, $payout);
+    my $lk = _build_lk($bought_price);
+    my $wk = _build_wk($bought_price, $payout);
 
     my $mean = _mean($pk, $lk, $wk);
 
