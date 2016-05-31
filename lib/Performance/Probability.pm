@@ -51,7 +51,7 @@ has bought_price => (
 
 =head2 pnl
 
-PnL
+Profit & Loss
 
 =cut
 
@@ -62,11 +62,12 @@ has pnl => (
 
 =head2 type
 
-Type of contract. Call or Put.
+Type of contract. Call or Put. For now, we only consider call and put contracts. We may consider
+other type of binary option contracts in the future.
 
 =cut
 
-has type => (
+has types => (
     is       => 'ro',
     required => 1,
 );
@@ -238,7 +239,7 @@ sub _covariance {
 
                     my $corr_ij = $b_interval / (sqrt($a_interval + $b_interval) * sqrt($b_interval + $c_interval));
 
-                    if ($self->type->[$i] ne $self->type->[$j]) {
+                    if ($self->types->[$i] ne $self->types->[$j]) {
                         $corr_ij = -1 * $corr_ij;
                     }
 
@@ -248,9 +249,6 @@ sub _covariance {
                         ($p_ij - $self->_pk->[$i] * $self->_pk->[$j]) * ($self->_wk->[$i] - $self->_lk->[$i]) * ($self->_wk->[$j] - $self->_lk->[$j]);
 
                     $covariance = $covariance + $covariance_ij;
-
-                    my $time_i = $start_i->datetime_yyyymmdd_hhmmss;
-                    my $time_j = $start_j->datetime_yyyymmdd_hhmmss;
                 }
             }
         }
