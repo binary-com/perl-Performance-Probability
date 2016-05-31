@@ -183,7 +183,7 @@ sub get_performance_probability {
 
     my $pnl = $params->{pnl};
 
-    #Below vars are all arrays.
+    #Below variables are all arrays.
     my $start_time   = $params->{start_time};
     my $sell_time    = $params->{sell_time};
     my $types        = $params->{types};
