@@ -21,6 +21,8 @@ Performance::Probability - The performance probability is a likelihood measure o
 
 =head1 SYNOPSYS
 
+  use Performance::Probability;
+
 =head1 DESCRIPTION
 
 =cut
