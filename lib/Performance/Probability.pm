@@ -9,9 +9,9 @@ use Math::Gauss::XS;
 
 use Exporter;
 
-@ISA = qw(Exporter);
+our @ISA = qw(Exporter);
 
-@EXPORT = qw(get_performance_probability);
+our @EXPORT = qw(get_performance_probability);
 
 our $VERSION = '0.01_1';
 
