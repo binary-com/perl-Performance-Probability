@@ -8,10 +8,7 @@ perl:
     - "5.14"
 install:
     # install prereqs
-    - "cpanm Moo"
     - "cpanm Date::Utility"
-    - "cpanm Format::Util::Numbers"
-    - "cpanm Array::Utils"
     - "cpanm Test::Perl::Critic"
     - "cpanm Math::Gauss::XS"
 script:
