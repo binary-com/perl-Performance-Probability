@@ -11,7 +11,7 @@ use Exporter;
 
 our @ISA = qw(Exporter);
 
-our @EXPORT = qw(get_performance_probability);
+our @EXPORT_OK = qw(get_performance_probability);
 
 our $VERSION = '0.01_1';
 

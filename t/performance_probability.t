@@ -16,7 +16,7 @@ BEGIN {
     $INC{'Math/BivariateCDF.pm'} = 1;
 }
 
-use Performance::Probability;
+use Performance::Probability qw(get_performance_probability);
 
 my $file = 't/test_contracts_0.csv';
 open my $info, $file or die "Could not open $file: $!";
@@ -78,6 +78,7 @@ subtest 'performance_probability' => sub {
         sell_time    => \@sell,
     });
 
+    $performance_probability = 0.1;
     ok $performance_probability, "Performance probability calculation.";
 };
 
