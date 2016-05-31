@@ -13,7 +13,7 @@ our $VERSION = '0.01_1';
 
 =head1 NAME
 
-Performance::Probability - The performance probability is a likelihood measure of a client reaching his/her current P&L. 
+Performance::Probability - The performance probability is a likelihood measure of a client reaching his/her current profit and loss. 
 
 =head1 VERSION
 
@@ -104,11 +104,7 @@ has sell_time => (
     required => 1,
 );
 
-=item B<_w_k>
-
-Profit in case of winning. ( Payout minus bought price ).
-
-=cut
+#Profit in case of winning. ( Payout minus bought price ).
 
 has _wk => (
     is      => 'rw',
@@ -131,11 +127,7 @@ sub _build__wk {
     return \@w_k;
 }
 
-=item B<_l_k>
-
-Loss in case of losing. (Minus bought price).
-
-=cut
+#Loss in case of losing. (Minus bought price).
 
 has _lk => (
     is      => 'rw',
@@ -156,11 +148,7 @@ sub _build__lk {
     return \@l_k;
 }
 
-=item B<_p_k>
-
-Winning probability. ( Bought price / Payout ).
-
-=cut
+#Winning probability. ( Bought price / Payout ).
 
 has _pk => (
     is      => 'rw',
@@ -182,11 +170,7 @@ sub _build__pk {
     return \@p_k;
 }
 
-=item B<_mean>
-
-Sigma( profit * winning probability + loss * losing probability ).
-
-=cut
+#Sigma( profit * winning probability + loss * losing probability ).
 
 sub _mean {
     my $self = shift;
@@ -202,11 +186,7 @@ sub _mean {
     return $sum;
 }
 
-=item B<_variance_x_square>
-
-Sigma( (profit**2) * winning probability + (loss**2) * losing probability ).
-
-=cut
+#Sigma( (profit**2) * winning probability + (loss**2) * losing probability ).
 
 sub _variance_x_square {
     my $self = shift;
@@ -221,11 +201,8 @@ sub _variance_x_square {
     return $sum;
 }
 
-=item B<_covariance>
-
-Sum of Covariance(i,j). See the documentation for the details.
-
-=cut
+#Sum of Covariance(i,j). See the documentation for the details.
+#Covariance(i, j) is the covariance between contract i and j with time overlap.
 
 sub _covariance {
     my $self = shift;
