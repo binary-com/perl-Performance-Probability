@@ -130,6 +130,23 @@ sub _build__wk {
     return \@w_k;
 }
 
+sub _build_wk {
+    my $self         = shift;
+    my $bought_price = shift;
+    my $payout       = shift;
+
+    my @w_k;
+
+    my $i;
+
+    for ($i = 0; $i < @{$payout}; ++$i) {
+        my $tmp_w_k = $payout->[$i] - $bought_price->[$i];
+        push @w_k, $tmp_w_k;
+    }
+
+    return \@w_k;
+}
+
 #Loss in case of losing. (Minus bought price).
 
 has _lk => (
@@ -146,6 +163,20 @@ sub _build__lk {
 
     for ($i = 0; $i < @{$self->bought_price}; ++$i) {
         push @l_k, 0 - $self->bought_price->[$i];
+    }
+
+    return \@l_k;
+}
+
+sub _build_lk {
+    my $self         = shift;
+    my $bought_price = shift;
+    my @l_k;
+
+    my $i;
+
+    for ($i = 0; $i < @{$bought_price}; ++$i) {
+        push @l_k, 0 - $bought_price->[$i];
     }
 
     return \@l_k;
@@ -173,6 +204,23 @@ sub _build__pk {
     return \@p_k;
 }
 
+sub _build_pk {
+    my $self         = shift;
+    my $bought_price = shift;
+    my $payout       = shift;
+
+    my @p_k;
+
+    my $i;
+
+    for ($i = 0; $i < @{$bought_price}; ++$i) {
+        my $tmp_pk = $bought_price->[$i] / $payout->[$i];
+        push @p_k, $tmp_pk;
+    }
+
+    return \@p_k;
+}
+
 #Sigma( profit * winning probability + loss * losing probability ).
 
 sub _mean {
@@ -189,6 +237,22 @@ sub _mean {
     return $sum;
 }
 
+sub _mean2 {
+    my $self = shift;
+    my $pk   = shift;
+    my $lk   = shift;
+    my $wk   = shift;
+
+    my $i;
+    my $sum = 0;
+
+    for ($i = 0; $i < @{$wk}; ++$i) {
+        $sum = $sum + ($wk->[$i] * $pk->[$i]) + ($lk->[$i] * (1 - $pk->[$i]));
+    }
+
+    return $sum;
+}
+
 #Sigma( (profit**2) * winning probability + (loss**2) * losing probability ).
 
 sub _variance_x_square {
@@ -199,6 +263,23 @@ sub _variance_x_square {
 
     for ($i = 0; $i < @{$self->_wk}; ++$i) {
         $sum = $sum + (($self->_wk->[$i]**2) * $self->_pk->[$i]) + (($self->_lk->[$i]**2) * (1 - $self->_pk->[$i]));
+    }
+
+    return $sum;
+}
+
+sub _variance_x_square2 {
+    my $self = shift;
+
+    my $pk = shift;
+    my $lk = shift;
+    my $wk = shift;
+
+    my $sum = 0;
+    my $i;
+
+    for ($i = 0; $i < @{$wk}; ++$i) {
+        $sum = $sum + (($wk->[$i]**2) * $pk->[$i]) + (($lk->[$i]**2) * (1 - $pk->[$i]));
     }
 
     return $sum;
@@ -259,6 +340,59 @@ sub _covariance {
     return $covariance;
 }
 
+sub _covariance2 {
+    my $self = shift;
+    my ($start_time, $sell_time, $underlying, $types, $pk, $lk, $wk) = @_;
+
+    my ($i, $j);
+    my $covariance = 0;
+
+    for ($i = 0; $i < @{$start_time}; ++$i) {
+        for ($j = 0; $j < @{$sell_time}; ++$j) {
+            if ($i != $j and $underlying->[$i] eq $underlying->[$j]) {
+
+                #check for time overlap.
+                my ($start_i, $start_j, $sell_i, $sell_j);
+                $start_i = $start_time->[$i];
+                $start_j = $start_time->[$j];
+                $sell_i  = $sell_time->[$i];
+                $sell_j  = $sell_time->[$j];
+
+                if ($start_j->is_after($start_i) and $start_j->is_before($sell_i)) {
+                    #calculate a, b and c interval. please see the documentation for details
+                    #of a, b and c.
+                    my $a_interval = $start_j->epoch - $start_i->epoch;
+                    my $b_interval = $sell_i->epoch - $start_j->epoch;
+                    my $c_interval = $sell_j->epoch - $sell_i->epoch;
+
+                    if ($c_interval < 0) {
+                        $c_interval = 0 - $c_interval;
+                        $b_interval = $sell_j->epoch - $start_i->epoch;
+                    }
+
+                    my $i_strike = 0.0 - Math::Gauss::XS::inv_cdf($self->_pk->[$i]);
+                    my $j_strike = 0.0 - Math::Gauss::XS::inv_cdf($self->_pk->[$j]);
+
+                    my $corr_ij = $b_interval / (sqrt($a_interval + $b_interval) * sqrt($b_interval + $c_interval));
+
+                    if ($types->[$i] ne $types->[$j]) {
+                        $corr_ij = -1 * $corr_ij;
+                    }
+
+                    my $p_ij = Math::BivariateCDF::bivnor($i_strike, $j_strike, $corr_ij);
+
+                    my $covariance_ij =
+                        ($p_ij - $pk->[$i] * $pk->[$j]) * ($wk->[$i] - $lk->[$i]) * ($wk->[$j] - $lk->[$j]);
+
+                    $covariance = $covariance + $covariance_ij;
+                }
+            }
+        }
+    }
+
+    return $covariance;
+}
+
 =item B<get_performance_probability>
 
 Calculate performance probability ( modified sharpe ratio );
@@ -274,6 +408,49 @@ sub get_performance_probability {
 
     $prob = $self->pnl - $mean;
     $prob = $prob / sqrt(($self->_variance_x_square() - ($mean**2.0)) + 2.0 * $self->_covariance());
+
+    $prob = 1.0 - Math::Gauss::XS::cdf($prob, 0.0, 1.0);
+
+    return $prob;
+}
+
+sub get_performance_probability2 {
+    my $self   = shift;
+    my $params = shift;
+
+    my $pnl = $params->{pnl};
+
+    #Below vars are all arrays.
+    my $start_time   = $params->{start_time};
+    my $sell_time    = $params->{sell_time};
+    my $types        = $params->{types};
+    my $underlying   = $params->{underlying};
+    my $bought_price = $params->{bought_price};
+    my $payout       = $params->{payout};
+
+    print $pnl . "\n";
+
+    my $pk = $self->_build_pk($bought_price, $payout);
+    my $lk = $self->_build_lk($bought_price);
+    my $wk = $self->_build_wk($bought_price, $payout);
+
+    my $mean = $self->_mean2($pk, $lk, $wk);
+
+    print "mean : " . $mean . "\n";
+
+    my $variance = $self->_variance_x_square2($pk, $lk, $wk);
+
+    print "variance : " . $variance . "\n";
+
+    my $covariance = $self->_covariance2($start_time, $sell_time, $underlying, $types, $pk, $lk, $wk);
+
+    print "covariance : " . $covariance . "\n";
+
+    #Calculate the performance probability here.
+    my $prob = 0;
+
+    $prob = $pnl - $mean;
+    $prob = $prob / sqrt(($variance - ($mean**2.0)) + 2.0 * $covariance);
 
     $prob = 1.0 - Math::Gauss::XS::cdf($prob, 0.0, 1.0);
 
