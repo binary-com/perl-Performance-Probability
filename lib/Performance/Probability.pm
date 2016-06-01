@@ -25,7 +25,17 @@ Performance::Probability - The performance probability is a likelihood measure o
 
 =head1 SYNOPSYS
 
-  use Performance::Probability;
+  use Performance::Probability qw(get_performance_probability);
+
+  my $probability = Performance::Probability::get_performance_probability(
+                                   types        => [qw/CALL PUT/],
+                                   payout       => [100, 100],
+                                   bought_price => [75, 55],
+                                   pnl          => 1000.0,
+                                   underlying   => [qw/EURUSD EURUSD/],
+                                   start_time   => [1461847439, 1461930839], #time in epoch
+                                   sell_time    => [1461924960, 1461931561], #time in epoch
+                                   );
 
 =head1 DESCRIPTION
 
@@ -190,6 +200,13 @@ sub get_performance_probability {
     my $underlying   = $params->{underlying};
     my $bought_price = $params->{bought_price};
     my $payout       = $params->{payout};
+
+    my $arity_check =
+        (scalar(@$start_time) == scalar(@$sell_time) == scalar(@$types) == scalar(@$underlying) == scalar(@$bought_price) == scalar(@$payout));
+
+    if (not $arity_check) {
+        die "start_time, sell_time, types, underlying, bought_price and payout are required parameters and need to have same length.";
+    }
 
     my $pk = _build_pk($bought_price, $payout);
     my $lk = _build_lk($bought_price);
