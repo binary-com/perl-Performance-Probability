@@ -193,6 +193,10 @@ sub get_performance_probability {
 
     my $pnl = $params->{pnl};
 
+    if (not defined $pnl) {
+        die "pnl is a required parameter.";
+    }
+
     #Below variables are all arrays.
     my $start_time   = $params->{start_time};
     my $sell_time    = $params->{sell_time};
@@ -202,7 +206,7 @@ sub get_performance_probability {
     my $payout       = $params->{payout};
 
     if (grep { $_ != scalar(@$start_time) } (scalar(@$sell_time), scalar(@$types), scalar(@$underlying), scalar(@$bought_price), scalar(@$payout))) {
-        die "start_time, sell_time, types, underlying, bought_price and payout are required parameters and need to have same lengths.";
+        die "start_time, sell_time, types, underlying, bought_price and payout are required parameters and need to be arrays of same lengths.";
     }
 
     my $pk = _build_pk($bought_price, $payout);
