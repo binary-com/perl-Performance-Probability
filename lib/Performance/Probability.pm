@@ -201,11 +201,8 @@ sub get_performance_probability {
     my $bought_price = $params->{bought_price};
     my $payout       = $params->{payout};
 
-    my $arity_check =
-        (scalar(@$start_time) == scalar(@$sell_time) == scalar(@$types) == scalar(@$underlying) == scalar(@$bought_price) == scalar(@$payout));
-
-    if (not $arity_check) {
-        die "start_time, sell_time, types, underlying, bought_price and payout are required parameters and need to have same length.";
+    if (grep { $_ != scalar(@$start_time) } (scalar(@$sell_time), scalar(@$types), scalar(@$underlying), scalar(@$bought_price), scalar(@$payout))) {
+        die "start_time, sell_time, types, underlying, bought_price and payout are required parameters and need to have same lengths.";
     }
 
     my $pk = _build_pk($bought_price, $payout);
