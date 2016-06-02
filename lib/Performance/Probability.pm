@@ -215,8 +215,6 @@ sub get_performance_probability {
 
     my $mean = _mean($pk, $lk, $wk);
 
-    print "mean : " . $mean . "\n";
-
     my $variance = _variance_x_square($pk, $lk, $wk);
 
     print "variance : " . $variance . "\n";
