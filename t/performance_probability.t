@@ -9,13 +9,6 @@ use Test::Most;
 use Test::FailWarnings;
 use Test::More;
 
-BEGIN {
-# Temporary while testing if perl-Math-BivariateCDF can be build on travis.
-    package Math::BivariateCDF;
-    1;
-    $INC{'Math/BivariateCDF.pm'} = 1;
-}
-
 use Performance::Probability qw(get_performance_probability);
 
 my $file = 't/test_contracts_0.csv';

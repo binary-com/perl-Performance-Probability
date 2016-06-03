@@ -217,11 +217,7 @@ sub get_performance_probability {
 
     my $variance = _variance_x_square($pk, $lk, $wk);
 
-    print "variance : " . $variance . "\n";
-
     my $covariance = _covariance($start_time, $sell_time, $underlying, $types, $pk, $lk, $wk);
-
-    print "covariance : " . $covariance . "\n";
 
     #Calculate the performance probability here.
     my $prob = 0;
