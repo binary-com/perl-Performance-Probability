@@ -3,12 +3,6 @@ use 5.010;
 use strict;
 use warnings;
 
-BEGIN {
-    package Math::BivariateCDF;
-    1;
-    $INC{'Math/BivariateCDF.pm'} = 1;
-}
-
 use Test::More;
 
 plan tests => 1;
