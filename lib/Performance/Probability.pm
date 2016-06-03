@@ -13,7 +13,7 @@ our @ISA = qw(Exporter);
 
 our @EXPORT_OK = qw(get_performance_probability);
 
-our $VERSION = '0.01_1';
+our $VERSION = '0.01';
 
 =head1 NAME
 
@@ -21,7 +21,7 @@ Performance::Probability - The performance probability is a likelihood measure o
 
 =head1 VERSION
 
-0.01_1
+0.01
 
 =head1 SYNOPSYS
 
