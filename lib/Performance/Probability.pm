@@ -17,7 +17,7 @@ our $VERSION = '0.01';
 
 =head1 NAME
 
-Performance::Probability - The performance probability is a likelihood measure of a client reaching his/her current profit and loss. 
+Performance::Probability 
 
 =head1 VERSION
 
@@ -38,6 +38,8 @@ Performance::Probability - The performance probability is a likelihood measure o
                                    );
 
 =head1 DESCRIPTION
+
+The performance probability is a likelihood measure of a client reaching his/her current profit and loss.
 
 =cut
 
