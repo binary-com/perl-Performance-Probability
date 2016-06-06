@@ -223,7 +223,7 @@ sub get_performance_probability {
     my $prob = 0;
 
     $prob = $pnl - $mean;
-    $prob = $prob / sqrt(($variance - ($mean**2.0)) + 2.0 * $covariance);
+    $prob = $prob / (sqrt(($variance - ($mean**2.0)) + 2.0 * $covariance) + 0.000000001);
 
     $prob = 1.0 - Math::Gauss::XS::cdf($prob, 0.0, 1.0);
 
