@@ -215,6 +215,13 @@ sub get_performance_probability {
         die "start_time, sell_time, types, underlying, bought_price and payout are required parameters and need to be arrays of same lengths.";
     }
 
+    my $i = 0;
+    for ($i = 0; $i < @{$start_time}; ++$i) {
+        if ($sell_time->[$i] - $start_time->[$i] == 0) {
+            die "Contract duration ( sell_time minus start_time ) cannot be zero.";
+        }
+    }
+
     my $pk = _build_pk($bought_price, $payout);
     my $lk = _build_lk($bought_price);
     my $wk = _build_wk($bought_price, $payout);
