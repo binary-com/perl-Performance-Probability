@@ -64,7 +64,6 @@ subtest 'performance_probability' => sub {
         sell_time    => \@sell,
     });
 
-    $performance_probability = 0.1;
     ok $performance_probability, "Performance probability calculation.";
 };
 
