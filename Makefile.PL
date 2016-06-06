@@ -18,7 +18,6 @@ WriteMakefile(
         'Test::More' => 0,
     },
     PREREQ_PM => {
-        'Date::Utility'      => 0,
         'Math::Gauss::XS'    => 0,
         'Math::BivariateCDF' => 0,
     },

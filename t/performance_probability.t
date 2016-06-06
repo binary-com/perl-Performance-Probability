@@ -2,14 +2,12 @@
 use strict;
 use warnings;
 
-use Date::Utility;
-
 use Test::Most;
 use Test::FailWarnings;
 
 use Performance::Probability qw(get_performance_probability);
 
-my $file = 't/test_contracts_0.csv';
+my $file = 't/test_contracts_1.csv';
 open my $info, $file or die "Could not open $file: $!";
 
 my $data;
@@ -41,14 +39,11 @@ while (my $line = <$info>) {
     my $underlying_symbol       = $tokens[7];
     my $sell_time               = $tokens[8];
 
-    my $dt_start_time = Date::Utility->new($start_time);
-    my $dt_sell_time  = Date::Utility->new($sell_time);
-
     push @type,       $bet_type;
     push @buy,        $buy_price;
     push @payout,     $payout_price;
-    push @start,      $dt_start_time->epoch;
-    push @sell,       $dt_sell_time->epoch;
+    push @start,      $start_time;
+    push @sell,       $sell_time;
     push @underlying, $underlying_symbol;
 
 }

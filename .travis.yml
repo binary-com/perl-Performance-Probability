@@ -8,7 +8,6 @@ perl:
     - "5.14"
 install:
     # install prereqs
-    - "cpanm Date::Utility"
     - "cpanm Test::Perl::Critic"
     - "cpanm Math::Gauss::XS"
     - "cpanm Math::BivariateCDF"
