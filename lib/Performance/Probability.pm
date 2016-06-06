@@ -149,8 +149,8 @@ sub _covariance {
                 $sell_i  = $sell_time->[$i];
                 $sell_j  = $sell_time->[$j];
 
-                my $min_end_time   = $sell_time->[$i] < $sell_time->[$j] ? $sell_time->[$i] : $sell_time->[$j];
-                my $max_start_time = $start_time->[$i] > $start_time->[$i] : $start_time->[$j];
+                my $min_end_time   = $sell_time->[$i] < $sell_time->[$j]   ? $sell_time->[$i]  : $sell_time->[$j];
+                my $max_start_time = $start_time->[$i] > $start_time->[$j] ? $start_time->[$i] : $start_time->[$j];
                 my $b_interval     = $max_start_time - $min_end_time;
 
                 if ($b >= 0) {
