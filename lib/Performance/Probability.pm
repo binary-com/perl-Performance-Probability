@@ -153,26 +153,17 @@ sub _covariance {
                 my $max_start_time = $start_time->[$i] > $start_time->[$j] ? $start_time->[$i] : $start_time->[$j];
                 my $b_interval     = $max_start_time - $min_end_time;
 
-                if ($b_interval >= 0) {
+                if ($b_interval > 0) {
                     #if ($start_j > $start_i and $start_j < $sell_i) {
-                    #calculate a, b and c interval. please see the documentation for details
-                    #of a, b and c.
-                    #my $a_interval = $start_j - $start_i;
-                    #my $b_interval = $sell_i - $start_j;
-                    #my $c_interval = $sell_j - $sell_i;
+                    #calculate first and second contracts durations. please see the documentation for details
 
-                    #if ($c_interval < 0) {
-                    #    $c_interval = 0 - $c_interval;
-                    #    $b_interval = $sell_j - $start_i;
-                    #}
-
-                    my $a_interval = ($sell_time->[$i] - $start_time->[$i]) - $b_interval;
-                    my $c_interval = ($sell_time->[$j] - $start_time->[$j]) - $b_interval;
+                    my $first_contract_duration  = ($sell_time->[$i] - $start_time->[$i]);
+                    my $second_contract_duration = ($sell_time->[$j] - $start_time->[$j]);
 
                     my $i_strike = 0.0 - Math::Gauss::XS::inv_cdf($pk->[$i]);
                     my $j_strike = 0.0 - Math::Gauss::XS::inv_cdf($pk->[$j]);
 
-                    my $corr_ij = $b_interval / (sqrt($a_interval + $b_interval) * sqrt($b_interval + $c_interval));
+                    my $corr_ij = $b_interval / (sqrt($first_contract_duration) * sqrt($second_contract_duration));
 
                     if ($types->[$i] ne $types->[$j]) {
                         $corr_ij = -1 * $corr_ij;
