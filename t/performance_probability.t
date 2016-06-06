@@ -1,5 +1,4 @@
 #Performance Probability test.
-use 5.010;
 use strict;
 use warnings;
 
@@ -7,7 +6,6 @@ use Date::Utility;
 
 use Test::Most;
 use Test::FailWarnings;
-use Test::More;
 
 use Performance::Probability qw(get_performance_probability);
 
