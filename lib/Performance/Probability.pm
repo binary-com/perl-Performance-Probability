@@ -153,7 +153,7 @@ sub _covariance {
                 my $max_start_time = $start_time->[$i] > $start_time->[$j] ? $start_time->[$i] : $start_time->[$j];
                 my $b_interval     = $max_start_time - $min_end_time;
 
-                if ($b >= 0) {
+                if ($b_interval >= 0) {
                     #if ($start_j > $start_i and $start_j < $sell_i) {
                     #calculate a, b and c interval. please see the documentation for details
                     #of a, b and c.
