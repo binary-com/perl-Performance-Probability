@@ -14,7 +14,7 @@ our @ISA = qw(Exporter);
 
 our @EXPORT_OK = qw(get_performance_probability);
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -22,7 +22,7 @@ Performance::Probability
 
 =head1 VERSION
 
-0.01
+0.02
 
 =head1 SYNOPSYS
 
