@@ -21,6 +21,7 @@ WriteMakefile(
     PREREQ_PM => {
         'Math::Gauss::XS'    => 0,
         'Math::BivariateCDF' => 0,
+        'Machine::Epsilon'   => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Performance-Probability-*' },

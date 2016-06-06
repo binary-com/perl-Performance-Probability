@@ -12,5 +12,6 @@ install:
     - "cpanm Test::Perl::Critic"
     - "cpanm Math::Gauss::XS"
     - "cpanm Math::BivariateCDF"
+    - "cpanm Machine::Epsilon"
 script:
     - "perl Makefile.PL && make test" 
