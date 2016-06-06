@@ -15,7 +15,8 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => 0,
     },
     TEST_REQUIRES => {
-        'Test::More' => 0,
+        'Test::More'          => 0,
+        'Test::FailWarnings', => 0,
     },
     PREREQ_PM => {
         'Math::Gauss::XS'    => 0,
