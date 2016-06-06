@@ -184,10 +184,8 @@ sub _covariance {
     return $covariance;
 }
 
-=item B<get_performance_probability>
-
+=head2 get_performance_probability
 Calculate performance probability ( modified sharpe ratio );
-
 =cut
 
 sub get_performance_probability {
