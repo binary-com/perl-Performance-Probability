@@ -16,7 +16,9 @@ WriteMakefile(
     },
     TEST_REQUIRES => {
         'Test::More'          => 0,
+        'Test::Most'          => 0,
         'Test::FailWarnings', => 0,
+        'Test::Perl::Critic', => 0,
     },
     PREREQ_PM => {
         'Math::Gauss::XS'    => 0,
