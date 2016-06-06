@@ -7,7 +7,7 @@ use Test::FailWarnings;
 
 use Performance::Probability qw(get_performance_probability);
 
-my $file = 't/test_contracts_1.csv';
+my $file = 't/test_contracts_0.csv';
 open my $info, $file or die "Could not open $file: $!";
 
 my $data;
@@ -57,7 +57,7 @@ subtest 'performance_probability' => sub {
     my $performance_probability = Performance::Probability::get_performance_probability({
         payout       => \@payout,
         bought_price => \@buy,
-        pnl          => 20000.0,
+        pnl          => 2000.0,
         types        => \@type,
         underlying   => \@underlying,
         start_time   => \@start,
