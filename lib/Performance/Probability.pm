@@ -169,6 +169,10 @@ sub _covariance {
                         $corr_ij = -1 * $corr_ij;
                     }
 
+                    if ($corr_ij < -1 or $corr_ij > 1) {
+                        next;
+                    }
+
                     my $p_ij = Math::BivariateCDF::bivnor($i_strike, $j_strike, $corr_ij);
 
                     my $covariance_ij =
