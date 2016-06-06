@@ -14,4 +14,4 @@ install:
     - "cpanm Math::BivariateCDF"
     - "cpanm Machine::Epsilon"
 script:
-    - "perl Makefile.PL && make test" 
+    - "perl Makefile.PL && RELEASE_TESTING=1 make test" 
