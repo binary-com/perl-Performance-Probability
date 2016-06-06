@@ -185,7 +185,9 @@ sub _covariance {
 }
 
 =head2 get_performance_probability
-Calculate performance probability ( modified sharpe ratio );
+
+Calculate performance probability ( modified sharpe ratio 
+
 =cut
 
 sub get_performance_probability {
