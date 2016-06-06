@@ -149,17 +149,25 @@ sub _covariance {
                 $sell_i  = $sell_time->[$i];
                 $sell_j  = $sell_time->[$j];
 
-                if ($start_j > $start_i and $start_j < $sell_i) {
+                my $min_end_time   = $sell_time->[$i] < $sell_time->[$j] ? $sell_time->[$i] : $sell_time->[$j];
+                my $max_start_time = $start_time->[$i] > $start_time->[$i] : $start_time->[$j];
+                my $b_interval     = $max_start_time - $min_end_time;
+
+                if ($b >= 0) {
+                    #if ($start_j > $start_i and $start_j < $sell_i) {
                     #calculate a, b and c interval. please see the documentation for details
                     #of a, b and c.
-                    my $a_interval = $start_j - $start_i;
-                    my $b_interval = $sell_i - $start_j;
-                    my $c_interval = $sell_j - $sell_i;
+                    #my $a_interval = $start_j - $start_i;
+                    #my $b_interval = $sell_i - $start_j;
+                    #my $c_interval = $sell_j - $sell_i;
 
-                    if ($c_interval < 0) {
-                        $c_interval = 0 - $c_interval;
-                        $b_interval = $sell_j - $start_i;
-                    }
+                    #if ($c_interval < 0) {
+                    #    $c_interval = 0 - $c_interval;
+                    #    $b_interval = $sell_j - $start_i;
+                    #}
+
+                    my $a_interval = ($sell_time->[$i] - $start_time->[$i]) - $b_interval;
+                    my $c_interval = ($sell_time->[$j] - $start_time->[$j]) - $b_interval;
 
                     my $i_strike = 0.0 - Math::Gauss::XS::inv_cdf($pk->[$i]);
                     my $j_strike = 0.0 - Math::Gauss::XS::inv_cdf($pk->[$j]);
