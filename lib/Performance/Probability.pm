@@ -14,7 +14,7 @@ our @ISA = qw(Exporter);
 
 our @EXPORT_OK = qw(get_performance_probability);
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 NAME
 
@@ -22,7 +22,7 @@ Performance::Probability - The performance probability is a likelihood measure o
 
 =head1 VERSION
 
-0.03
+0.04
 
 =head1 SYNOPSYS
 
@@ -151,10 +151,10 @@ sub _covariance {
 
                 my $min_end_time   = $sell_time->[$i] < $sell_time->[$j]   ? $sell_time->[$i]  : $sell_time->[$j];
                 my $max_start_time = $start_time->[$i] > $start_time->[$j] ? $start_time->[$i] : $start_time->[$j];
-                my $b_interval     = $max_start_time - $min_end_time;
+                my $b_interval     = $min_end_time - $max_start_time;
 
                 if ($b_interval > 0) {
-                    #if ($start_j > $start_i and $start_j < $sell_i) {
+
                     #calculate first and second contracts durations. please see the documentation for details
 
                     my $first_contract_duration  = ($sell_time->[$i] - $start_time->[$i]);
