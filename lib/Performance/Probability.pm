@@ -143,12 +143,6 @@ sub _covariance {
             if ($i != $j and $underlying->[$i] eq $underlying->[$j]) {
 
                 #check for time overlap.
-                my ($start_i, $start_j, $sell_i, $sell_j);
-                $start_i = $start_time->[$i];
-                $start_j = $start_time->[$j];
-                $sell_i  = $sell_time->[$i];
-                $sell_j  = $sell_time->[$j];
-
                 my $min_end_time   = $sell_time->[$i] < $sell_time->[$j]   ? $sell_time->[$i]  : $sell_time->[$j];
                 my $max_start_time = $start_time->[$i] > $start_time->[$j] ? $start_time->[$i] : $start_time->[$j];
                 my $b_interval     = $min_end_time - $max_start_time;
