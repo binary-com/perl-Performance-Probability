@@ -1,4 +1,6 @@
 #sudo: false
+matrix:
+    fast_finish: true
 language: perl
 perl:
     - "5.22"
