@@ -15,5 +15,9 @@ install:
     - "cpanm Math::Gauss::XS"
     - "cpanm Math::BivariateCDF"
     - "cpanm Machine::Epsilon"
+    - "cpanm -qn Test::Requires::Git"
+    - "cpanm -qn Devel::Cover::Report::Codecov"
 script:
-    - "perl Makefile.PL && RELEASE_TESTING=1 make test" 
+    - "perl Makefile.PL && RELEASE_TESTING=1 make test"
+after_success:
+    - RELEASE_TESTING=1 cover -test -report codecov
