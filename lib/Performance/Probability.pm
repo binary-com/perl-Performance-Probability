@@ -20,10 +20,6 @@ our $VERSION = '0.04';
 
 Performance::Probability - The performance probability is a likelihood measure of a client reaching his/her current profit and loss.
 
-=head1 VERSION
-
-0.04
-
 =head1 SYNOPSYS
 
   use Performance::Probability qw(get_performance_probability);
