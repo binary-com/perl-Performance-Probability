@@ -19,6 +19,7 @@ my @start;
 my @sell;
 my @underlying;
 my @type;
+my $pnl = 0;
 
 while (my $line = <$info>) {
 
@@ -46,6 +47,7 @@ while (my $line = <$info>) {
     push @sell,       $sell_time;
     push @underlying, $underlying_symbol;
 
+    $pnl = $pnl + ($payout_price - $buy_price);
 }
 
 close $info;
@@ -57,7 +59,7 @@ subtest 'performance_probability' => sub {
     my $performance_probability = Performance::Probability::get_performance_probability({
         payout       => \@payout,
         bought_price => \@buy,
-        pnl          => 2000.0,
+        pnl          => $pnl,
         types        => \@type,
         underlying   => \@underlying,
         start_time   => \@start,
@@ -65,6 +67,7 @@ subtest 'performance_probability' => sub {
     });
 
     ok $performance_probability, "Performance probability calculation.";
+
 };
 
 done_testing;
