@@ -228,7 +228,7 @@ sub get_performance_probability {
     my $epsilon = machine_epsilon();
 
     $prob = $pnl - $mean;
-    $prob = $prob / (sqrt(($variance - ($mean**2.0)) + 2.0 * $covariance) + $epsilon);
+    $prob = $prob / (sqrt(($variance - ($mean**2.0)) + $covariance) + $epsilon);
 
     $prob = 1.0 - Math::Gauss::XS::cdf($prob, 0.0, 1.0);
 
