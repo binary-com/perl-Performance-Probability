@@ -172,7 +172,7 @@ sub _covariance {
                     }
                 }
             }
-        } else {
+        } elsif ($types->[$i] =~ /^DIGIT/) {
             for ($j = 0; $j < @{$exit_tick_epoch}; ++$j) {
                 if ($i != $j and $underlying->[$i] eq $underlying->[$j] and $exit_tick_epoch->[$i] == $exit_tick_epoch->[$j]) {
 
@@ -181,10 +181,15 @@ sub _covariance {
                             type_2    => $types->[$j],
                             barrier_1 => $barriers->[$i],
                             barrier_2 => $barriers->[$j]});
-                    $covariance = $covariance + $p_ij;
+
+                    my $covariance_ij = ($p_ij - $pk->[$i] * $pk->[$j]) * ($wk->[$i] - $lk->[$i]) * ($wk->[$j] - $lk->[$j]);
+                    $covariance = $covariance + $covariance_ij;
 
                 }
             }
+        } else {
+
+            next;
         }
     }
     return $covariance;
