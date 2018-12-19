@@ -233,8 +233,7 @@ sub get_shared_winning_probability {
 
 Return the digits that contribute to a winning contract.
 
-Example: 
-DIGITEVEN : 0, 2, 4, 6, 8.
+Example:DIGITEVEN : 0, 2, 4, 6, 8.
 DIGITODD: 1, 3, 5,7,9
 
 =cut
