@@ -19,6 +19,8 @@ my @start;
 my @sell;
 my @underlying;
 my @type;
+my @exit_tick_epoch;
+my @barriers;
 my $pnl = 0;
 
 while (my $line = <$info>) {
@@ -39,6 +41,8 @@ while (my $line = <$info>) {
     my $start_time              = $tokens[6];
     my $underlying_symbol       = $tokens[7];
     my $sell_time               = $tokens[8];
+    my $exit_tick_epoch         = $tokens[9];
+    my $barrier                 = $tokens[10];
 
     push @type,       $bet_type;
     push @buy,        $buy_price;
@@ -46,6 +50,9 @@ while (my $line = <$info>) {
     push @start,      $start_time;
     push @sell,       $sell_time;
     push @underlying, $underlying_symbol;
+    push @exit_tick_epoch, $exit_tick_epoch;
+    push @barriers, $barrier;
+
 
     $pnl = $pnl + ($payout_price - $buy_price);
 }
@@ -64,6 +71,8 @@ subtest 'performance_probability' => sub {
         underlying   => \@underlying,
         start_time   => \@start,
         sell_time    => \@sell,
+        exit_tick_epoch => \@exit_tick_epoch,
+        barriers        => \@barriers,
     });
 
     ok $performance_probability, "Performance probability calculation.";
